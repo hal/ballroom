@@ -31,31 +31,38 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NumberBoxItem extends FormItem<Number> {
 
+    /**
+     * As defined by https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_SAFE_INTEGER
+     */
+    public static final long MIN_SAFE_INTEGER = -9007199254740991l;
+
+    /**
+     * As defined by https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+     */
+    public static final long MAX_SAFE_INTEGER = 9007199254740991l;
+
+
     private boolean allowNegativeNumber;
     private TextBox textBox;
     private InputElementWrapper wrapper;
 
-    private int min = 0;
-    private int max = Integer.MAX_VALUE;
+    private long min = 0;
+    private long max = MAX_SAFE_INTEGER;
 
     public NumberBoxItem(String name, String title) {
         this(name, title, false);
     }
 
-    public NumberBoxItem(String name, String title, int min, int max) {
+    public NumberBoxItem(String name, String title, long min, long max) {
         this(name, title, min<0);
-        this.min = min;
-        this.max = max;
+        setMin(min);
+        setMax(max);
     }
     
     public NumberBoxItem(String name, String title, boolean allowNegativeNumber) {
         super(name, title);
         this.allowNegativeNumber = allowNegativeNumber;
-
-        if(allowNegativeNumber)
-            this.min = Integer.MIN_VALUE;
-        else
-            this.min = 0;
+        setMin(allowNegativeNumber ? MIN_SAFE_INTEGER : 0);
 
         textBox = new TextBox();
         textBox.setName(name);
@@ -78,12 +85,16 @@ public class NumberBoxItem extends FormItem<Number> {
 
     }
 
-    public void setMin(int min) {
-        this.min = min;
+    public void setMin(long min) {
+        if (allowNegativeNumber) {
+            this.min = Math.max(MIN_SAFE_INTEGER, min);
+        } else {
+            this.min = Math.max(0, min);
+        }
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setMax(long max) {
+        this.max = Math.min(MAX_SAFE_INTEGER, max);
     }
 
     @Override
@@ -114,7 +125,7 @@ public class NumberBoxItem extends FormItem<Number> {
 
         String value = textBox.getValue().equals("") ? "0" : textBox.getValue();
         try {
-            return Integer.valueOf(value);
+            return Long.valueOf(value);
         } catch (NumberFormatException e) {
             return -1;
         }
@@ -146,7 +157,7 @@ public class NumberBoxItem extends FormItem<Number> {
     public void setValue(Number number) {
         toggleExpressionInput(textBox, false);
 
-        if(number.intValue()>=0 || allowNegativeNumber)
+        if(number.longValue()>=0 || allowNegativeNumber)
         {
             textBox.setValue(String.valueOf(number));
         }
@@ -181,8 +192,8 @@ public class NumberBoxItem extends FormItem<Number> {
         else if(!isEmpty)
         {
             try {
-                Integer i = Integer.valueOf(textBox.getValue());
-                outcome = (i >= min) &&  i<=max;
+                Long l = Long.valueOf(textBox.getValue());
+                outcome = (l >= min) &&  l<=max;
             } catch (NumberFormatException e) {
                 outcome = false;
             }

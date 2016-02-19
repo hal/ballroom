@@ -48,7 +48,7 @@ public class DefaultPager extends SimplePager {
         if (display != null) {
             Range range = display.getVisibleRange();
             int pageSize = range.getLength();
-            if (!isRangeLimited() && display.isRowCountExact()) {
+            if ((!isRangeLimited() || display.getRowCount() <= pageSize) && display.isRowCountExact()) {
                 index = Math.min(index, display.getRowCount() - pageSize);
             }
             index = Math.max(0, index);

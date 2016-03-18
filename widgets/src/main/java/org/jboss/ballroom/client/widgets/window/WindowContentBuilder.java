@@ -21,7 +21,7 @@ public class WindowContentBuilder {
 
     public Widget build() {
         DockLayoutPanel wrapper = new DockLayoutPanel(Style.Unit.PX);
-        wrapper.addSouth(options, 35);
+        wrapper.addSouth(options, 38);
 
         ScrollPanel scroll = new ScrollPanel(content);
         wrapper.add(scroll);

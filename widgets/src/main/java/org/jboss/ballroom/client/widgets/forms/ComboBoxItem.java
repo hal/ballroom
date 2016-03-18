@@ -36,12 +36,19 @@ public class ComboBoxItem extends FormItem<String> {
 
     private ListBox listBox;
     private boolean defaultToFirst;
+    private final boolean addEmptyItem;
 
     private InputElementWrapper wrapper;
     //private boolean postInit = false;
 
     public ComboBoxItem(String name, String title) {
+        this(name, title, true);
+    }
+
+    public ComboBoxItem(String name, String title, boolean addEmptyItem) {
         super(name, title);
+        this.addEmptyItem = false;
+
         this.listBox = new ListBox();
         this.listBox.setTabIndex(0);
         this.listBox.addChangeHandler(new ChangeHandler() {
@@ -134,7 +141,7 @@ public class ComboBoxItem extends FormItem<String> {
         listBox.clear();
 
         //listBox.clearSelection();
-        if(values.length==0 || !values[0].isEmpty())
+        if(addEmptyItem && (values.length==0 || !values[0].isEmpty()))
             listBox.addItem("");
 
         for(String s : values)
@@ -150,7 +157,7 @@ public class ComboBoxItem extends FormItem<String> {
         listBox.clear();
         //listBox.clearSelection();
 
-        if(values.isEmpty() || !values.iterator().next().isEmpty())
+        if(addEmptyItem && (values.isEmpty() || !values.iterator().next().isEmpty()))
             listBox.addItem("");
 
         for(String s : values)

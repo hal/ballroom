@@ -47,7 +47,7 @@ public class ComboBoxItem extends FormItem<String> {
 
     public ComboBoxItem(String name, String title, boolean addEmptyItem) {
         super(name, title);
-        this.addEmptyItem = false;
+        this.addEmptyItem = addEmptyItem;
 
         this.listBox = new ListBox();
         this.listBox.setTabIndex(0);

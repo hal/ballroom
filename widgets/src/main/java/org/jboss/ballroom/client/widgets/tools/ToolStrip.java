@@ -162,12 +162,16 @@ public class ToolStrip extends HorizontalPanel implements SecurityContextAware {
                     granted = overallPrivilege; // coarse grained, inherited from parent
                 }
 
+                btn.setVisible(granted);
+
                 if (update) {
-                    btn.setVisible(true);
-                    btn.setEnabled(granted);
-                    visibleButtons++;
+                    if (granted) {
+                        widget.getElement().removeClassName("rbac-suppressed");
+                        visibleButtons++;
+                    } else {
+                        widget.getElement().addClassName("rbac-suppressed");
+                    }
                 } else {
-                    btn.setVisible(granted);
                     if (!granted) {
                         widget.getElement().addClassName("rbac-suppressed");
                     }

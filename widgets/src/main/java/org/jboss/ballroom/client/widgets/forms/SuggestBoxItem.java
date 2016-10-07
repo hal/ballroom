@@ -1,6 +1,8 @@
 package org.jboss.ballroom.client.widgets.forms;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -83,7 +85,8 @@ public class SuggestBoxItem extends FormItem<String> {
         if(null==oracle)
             throw new RuntimeException("oracle required!");
 
-        this.suggestBox = new SuggestBox(oracle, textBox);
+        this.suggestBox = new SuggestBox(oracle, textBox, new ScrollableDefaultSuggestionDisplay());
+        this.suggestBox.setLimit(Short.MAX_VALUE);
 
         suggestBox.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
@@ -173,5 +176,31 @@ public class SuggestBoxItem extends FormItem<String> {
     @Override
     protected void toggleExpressionInput(Widget target, boolean flag) {
         wrapper.setExpression(flag);
+    }
+
+    private static class ScrollableDefaultSuggestionDisplay extends SuggestBox.DefaultSuggestionDisplay {
+
+        @Override
+        protected void moveSelectionDown() {
+            super.moveSelectionDown();
+            scrollSelectedItemIntoView();
+        }
+
+        @Override
+        protected void moveSelectionUp() {
+            super.moveSelectionUp();
+            scrollSelectedItemIntoView();
+        }
+
+        private void scrollSelectedItemIntoView() {
+            NodeList<Node> items = getSuggestionMenu().getElement().getChild(1).getChild(0).getChildNodes();
+            for (int i = 0; i < items.getLength(); i++) {
+                Element element = (Element) items.getItem(i);
+                if (((Element) element.getChild(0)).getClassName().equals("item item-selected")) {
+                    element.scrollIntoView();
+                    break;
+                }
+            }
+        }
     }
 }

@@ -49,6 +49,10 @@ public class DoubleFormItem extends FormItem<Number> {
     private double min = 0;
     private double max = MAX_SAFE_VALUE;
 
+    {
+        this.errMessage = "Invalid numeric value";
+    }
+
     public DoubleFormItem(String name, String title) {
         this(name, title, false);
     }
@@ -58,7 +62,7 @@ public class DoubleFormItem extends FormItem<Number> {
         setMin(min);
         setMax(max);
     }
-    
+
     public DoubleFormItem(String name, String title, boolean allowNegativeNumber) {
         super(name, title);
         this.allowNegativeNumber = allowNegativeNumber;
@@ -80,8 +84,6 @@ public class DoubleFormItem extends FormItem<Number> {
         textBox.setVisibleLength(6);
 
         wrapper = new InputElementWrapper(textBox, this);
-
-        this.errMessage = "Invalid numeric value";
 
     }
 
@@ -187,6 +189,7 @@ public class DoubleFormItem extends FormItem<Number> {
         }
         else if(isRequired() && isEmpty)
         {
+            this.errMessage = "Value must not be empty";
             outcome = false;
         }
         else if(!isEmpty)
@@ -194,6 +197,9 @@ public class DoubleFormItem extends FormItem<Number> {
             try {
                 double l = Double.valueOf(textBox.getValue());
                 outcome = (l >= min) &&  l<=max;
+                if (!outcome) {
+                    this.errMessage = "Value must be between " + min + " and " + max;
+                }
             } catch (NumberFormatException e) {
                 outcome = false;
             }

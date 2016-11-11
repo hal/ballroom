@@ -54,17 +54,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CheckBoxItem extends FormItem<Boolean> {
 
+    private static final String SWITCH_TO_EXPRESSION_TITLE = "Shift click for expression input";
+
     private CheckBox checkBox;
     private final TextBox textBox;
     private final HorizontalPanel panel;
     private final InputElementWrapper textBoxWrapper;
     private final InputElementWrapper checkBoxWrapper;
+    private boolean expressionAllowed = true;
 
     public CheckBoxItem(String name, String title) {
         super(name, title);
         checkBox = new CheckBox();
         checkBox.setName(name);
-        checkBox.setTitle("Shift click for expression input");
+        checkBox.setTitle(SWITCH_TO_EXPRESSION_TITLE);
         checkBox.setTabIndex(0);
         checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
@@ -78,10 +81,9 @@ public class CheckBoxItem extends FormItem<Boolean> {
         checkBox.addClickHandler(new  ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                if (clickEvent.isShiftKeyDown()) {
+                if (clickEvent.isShiftKeyDown() && expressionAllowed) {
                     toogleTextInput();
                     clickEvent.preventDefault();
-
                 }
             }
         });
@@ -216,5 +218,11 @@ public class CheckBoxItem extends FormItem<Boolean> {
     @Override
     public void clearValue() {
         setValue(false);
+    }
+
+    public void setExpressionAllowed(boolean expressionAllowed) {
+        this.expressionAllowed = expressionAllowed;
+        checkBox.setTitle(expressionAllowed ? SWITCH_TO_EXPRESSION_TITLE : "");
+        toogleBooleanInput();
     }
 }

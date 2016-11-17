@@ -23,6 +23,10 @@ public class SuggestBoxItem extends FormItem<String> {
     private SuggestOracle oracle;
     private boolean willBeFiltered = false;
 
+    {
+        this.errMessage = "No whitespace, no special chars allowed";
+    }
+
     public SuggestBoxItem(String name, String title) {
         super(name, title);
 
@@ -37,9 +41,6 @@ public class SuggestBoxItem extends FormItem<String> {
                 setUndefined(event.getValue().equals(""));
             }
         });
-
-
-        this.errMessage = "No whitespace, no special chars allowed";
     }
 
     public SuggestBoxItem(String name, String title, boolean isRequired) {
@@ -58,8 +59,6 @@ public class SuggestBoxItem extends FormItem<String> {
                 setUndefined(event.getValue().equals(""));
             }
         });
-
-        this.errMessage = "No whitespace, no special chars allowed";
     }
 
     @Override
@@ -159,6 +158,7 @@ public class SuggestBoxItem extends FormItem<String> {
         }
         else if(isRequired() && value.equals(""))
         {
+            this.errMessage = "Value must not be empty";
             return false;
         }
         else

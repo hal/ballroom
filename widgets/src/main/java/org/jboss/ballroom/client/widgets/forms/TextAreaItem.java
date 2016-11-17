@@ -149,6 +149,7 @@ public class TextAreaItem extends FormItem<String> {
         }
         else if (isRequired() && value.equals(""))
         {
+            this.errMessage = "Value must not be empty";
             return false;
         }
         else

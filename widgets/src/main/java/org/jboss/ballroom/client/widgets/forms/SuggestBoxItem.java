@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @date 2/27/12
  */
 public class SuggestBoxItem extends FormItem<String> {
+
     protected TextBox textBox;
     private InputElementWrapper wrapper;
     private SuggestBox suggestBox;
@@ -28,26 +29,13 @@ public class SuggestBoxItem extends FormItem<String> {
     }
 
     public SuggestBoxItem(String name, String title) {
-        super(name, title);
-
-        textBox = new TextBox();
-        textBox.setName(name);
-        textBox.setTitle(title);
-        textBox.setTabIndex(0);
-        textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                setModified(true);
-                setUndefined(event.getValue().equals(""));
-            }
-        });
+        this(name, title, false);
     }
 
     public SuggestBoxItem(String name, String title, boolean isRequired) {
         super(name, title);
 
         setRequired(isRequired);
-
         textBox = new TextBox();
         textBox.setName(name);
         textBox.setTitle(title);
@@ -81,8 +69,24 @@ public class SuggestBoxItem extends FormItem<String> {
     @Override
     public Widget asWidget() {
 
-        if(null==oracle)
-            throw new RuntimeException("oracle required!");
+        if (null == oracle) {
+            throw new RuntimeException("SuggestOracle cannot be null.");
+        }
+
+        // re-create the TextBox, if not, ModelBrowser throws "This widget's parent does not implement HasWidgets"
+        // when navigating on any form that contains an attribute with capability-reference.
+        // as ModelBrowser always call asWidget to re-create the widgets, it seems insignificant create a new TextBox
+        textBox = new TextBox();
+        textBox.setName(name);
+        textBox.setTitle(title);
+        textBox.setTabIndex(0);
+        textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                setModified(true);
+                setUndefined(event.getValue().equals(""));
+            }
+        });
 
         this.suggestBox = new SuggestBox(oracle, textBox, new ScrollableDefaultSuggestionDisplay());
         this.suggestBox.setLimit(Short.MAX_VALUE);
@@ -103,11 +107,8 @@ public class SuggestBoxItem extends FormItem<String> {
             }
         });
 
-
         wrapper = new InputElementWrapper(suggestBox, this);
-
         wrapper.setConstraintsApply(willBeFiltered);
-
         return wrapper;
     }
 
@@ -125,8 +126,7 @@ public class SuggestBoxItem extends FormItem<String> {
     @Override
     public void setExpressionValue(String expr) {
         this.expressionValue = expr;
-        if(expressionValue!=null)
-        {
+        if (expressionValue != null) {
             toggleExpressionInput(textBox, true);
             textBox.setValue(expressionValue);
         }
@@ -152,17 +152,12 @@ public class SuggestBoxItem extends FormItem<String> {
     @Override
     public boolean validate(String value) {
 
-        if(expressionValue!=null || isExpressionScheme(textBox.getValue()))
-        {
+        if (expressionValue != null || isExpressionScheme(textBox.getValue())) {
             return true;
-        }
-        else if(isRequired() && value.equals(""))
-        {
+        } else if (isRequired() && value.equals("")) {
             this.errMessage = "Value must not be empty";
             return false;
-        }
-        else
-        {
+        } else {
             String updated = value.replace(" ", ""); // contains white space?
             return updated.equals(value);
         }

@@ -17,18 +17,6 @@ Participating in Ballroom
 * Mailing List: https://lists.jboss.org/mailman/listinfo/jboss-as7-dev
 * IRC: irc://irc.freenode.org/jboss-as7
 
-Running the showcase
---------------------
-The showcase should give an idea what widgets exists and what functionality they offer.
-It's work in progress and subject to continuous improvements. But in general the widget set
-should be kept small and straight forward. 
-
-Running the showcase is simple:
-
-	cd showcase
-	mvn clean gwt:run
-	
-
 Using ballroom in your project
 ------------------------------
 

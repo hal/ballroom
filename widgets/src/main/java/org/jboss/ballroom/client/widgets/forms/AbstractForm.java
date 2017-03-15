@@ -358,6 +358,10 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
         setFieldsInGroup(group, renderer, flatten(items));
     }
 
+    public void clearGroup(String group) {
+        this.formItems.remove(group);
+    }
+
     private FormItem<?>[] flatten(FormItem<?>[]... items) {
         List<FormItem<?>> l = new ArrayList<FormItem<?>>();
         for (FormItem<?> [] fiArray : items) {

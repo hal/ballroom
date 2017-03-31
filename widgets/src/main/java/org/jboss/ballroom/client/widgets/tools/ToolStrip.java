@@ -108,7 +108,7 @@ public class ToolStrip extends HorizontalPanel implements SecurityContextAware {
     }
 
     public void addToolButtonRight(ToolButton button) {
-        button.getElement().setAttribute("style", "margin-right:5px;");
+        button.getElement().setAttribute("style", "margin-left:5px;");
         button.addStyleName("toolstrip-button-secondary");
         right.add(button);
 

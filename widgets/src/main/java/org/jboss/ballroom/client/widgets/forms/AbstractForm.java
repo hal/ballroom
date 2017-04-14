@@ -17,16 +17,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.jboss.ballroom.client.I18n;
 import org.jboss.ballroom.client.rbac.SecurityContext;
 import org.jboss.ballroom.client.rbac.SecurityContextAware;
 import org.jboss.ballroom.client.rbac.SecurityService;
 import org.jboss.ballroom.client.spi.Framework;
 import org.jboss.ballroom.client.widgets.window.DialogueOptions;
+import org.jboss.ballroom.client.widgets.window.Feedback;
 
 /**
  * @author Heiko Braun
@@ -50,8 +53,10 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
 
     final static String DEFAULT_GROUP = "default";
     protected FormCallback toolsCallback = null; // if set, the tools will be provided externally
+    protected FormResetCallback resetCallback; // if set, the reset will be provided externally
 
     private HTML edit;
+    private HTML reset;
     private final List<FormValidator> formValidators = new LinkedList<>();
 
     /**
@@ -71,6 +76,13 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 edit.getElement().getStyle().setDisplay(Style.Display.INLINE);
             else
                 edit.getElement().getStyle().setDisplay(Style.Display.NONE);
+        }
+
+        if (reset != null && !reset.getElement().hasClassName(RBAC_SUPPRESSED)) {
+            if(isOperational)
+                reset.getElement().getStyle().setDisplay(Style.Display.INLINE);
+            else
+                reset.getElement().getStyle().setDisplay(Style.Display.NONE);
         }
 
     }
@@ -166,6 +178,8 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
         viewPanel.setStyleName("fill-layout-width");
         viewPanel.addStyleName("form-view-panel");
 
+        HorizontalPanel linkPanel = new HorizontalPanel();
+
         if(toolsCallback!=null)
         {
 
@@ -179,13 +193,38 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 }
             };
             edit.addClickHandler(editHandler);
-            viewPanel.add(edit);
+            linkPanel.add(edit);
 
             if(!writePriviledges)
                 edit.getElement().addClassName(RBAC_SUPPRESSED);
 
+            if (resetCallback != null) {
+                reset = new HTML("<i class='icon-refresh'></i>&nbsp; Reset");
+                reset.setStyleName("form-edit-button");
+                reset.setTitle("Remove all values of this form.");
+                ClickHandler resetHandler = new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        Feedback.confirm(
+                                I18n.CONSTANTS.reset_title(),
+                                I18n.CONSTANTS.reset_description(),
+                                isConfirmed -> {
+                                    if (isConfirmed) {
+                                        resetCallback.onReset();
+                                    }
+                                });
+                    }
+                };
+                reset.addClickHandler(resetHandler);
+                linkPanel.add(reset);
+
+                if (!writePriviledges)
+                    reset.getElement().addClassName(RBAC_SUPPRESSED);
+            }
+
             // without any data the form is disabled
             setOperational(false);
+            viewPanel.add(linkPanel);
         }
 
         deck.add(viewPanel.asWidget());
@@ -481,6 +520,11 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
         this.toolsCallback = callback;
     }
 
+    @Override
+    public void setResetCallback(FormResetCallback callback) {
+        this.resetCallback = callback;
+    }
+
     class FormDeckPanel extends DeckPanel implements SecurityContextAware {
 
         private final String id;
@@ -541,10 +585,16 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 if (edit != null) {
                     edit.getElement().addClassName(RBAC_SUPPRESSED);
                 }
+                if (reset != null) {
+                    reset.getElement().addClassName(RBAC_SUPPRESSED);
+                }
             } else {
                 // TODO update form fields based on new security context?
                 if (edit != null) {
                     edit.getElement().removeClassName(RBAC_SUPPRESSED);
+                }
+                if (reset != null) {
+                    reset.getElement().removeClassName(RBAC_SUPPRESSED);
                 }
                 if (wasEnabled) {
                     setEnabled(true);

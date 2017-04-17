@@ -95,5 +95,7 @@ public interface FormAdapter<T> extends FormControl {
      */
     void setResetCallback(FormResetCallback callback);
 
+    void setEnableResetButton(boolean value);
+
     void addFormValidator(FormValidator formValidator);
 }

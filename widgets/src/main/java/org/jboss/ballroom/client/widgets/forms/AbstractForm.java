@@ -84,6 +84,7 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 reset.getElement().getStyle().setDisplay(Style.Display.INLINE);
             else
                 reset.getElement().getStyle().setDisplay(Style.Display.NONE);
+            resetPanel.setVisible(isOperational);
         }
 
     }

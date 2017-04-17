@@ -48,6 +48,7 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
     protected boolean isTransient;
 
     private FormDeckPanel deck;
+    private DeckPanel resetPanel;
     protected List<PlainFormView> plainViews = new ArrayList<PlainFormView>();
     private boolean isEnabled =true;
 
@@ -83,6 +84,7 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 reset.getElement().getStyle().setDisplay(Style.Display.INLINE);
             else
                 reset.getElement().getStyle().setDisplay(Style.Display.NONE);
+            resetPanel.setVisible(isOperational);
         }
 
     }
@@ -199,24 +201,29 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
                 edit.getElement().addClassName(RBAC_SUPPRESSED);
 
             if (resetCallback != null) {
+
+                resetPanel = new DeckPanel();
+
                 reset = new HTML("<i class='icon-refresh'></i>&nbsp; Reset");
                 reset.setStyleName("form-edit-button");
                 reset.setTitle("Remove all values of this form.");
-                ClickHandler resetHandler = new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        Feedback.confirm(
-                                I18n.CONSTANTS.reset_title(),
-                                I18n.CONSTANTS.reset_description(),
-                                isConfirmed -> {
-                                    if (isConfirmed) {
-                                        resetCallback.onReset();
-                                    }
-                                });
-                    }
-                };
+                ClickHandler resetHandler = event -> Feedback.confirm(
+                        I18n.CONSTANTS.reset_title(),
+                        I18n.CONSTANTS.reset_description(),
+                        isConfirmed -> {
+                            if (isConfirmed) {
+                                resetCallback.onReset();
+                            }
+                        });
                 reset.addClickHandler(resetHandler);
-                linkPanel.add(reset);
+
+                HTML resetDisabled = new HTML("<i class='icon-refresh'></i>&nbsp; Reset");
+                resetDisabled.setStyleName("form-edit-button-disabled");
+
+                resetPanel.add(reset);
+                resetPanel.add(resetDisabled);
+
+                linkPanel.add(resetPanel);
 
                 if (!writePriviledges)
                     reset.getElement().addClassName(RBAC_SUPPRESSED);
@@ -328,6 +335,11 @@ public abstract class AbstractForm<T> implements FormAdapter<T> {
         refreshPlainView(); // make sure it's build, even empty...
 
         return deck;
+    }
+
+    public void setEnableResetButton(boolean val) {
+        if (resetPanel != null)
+            resetPanel.showWidget(val ? 0: 1);
     }
 
     /**

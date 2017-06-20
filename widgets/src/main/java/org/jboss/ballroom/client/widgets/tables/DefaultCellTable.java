@@ -19,6 +19,9 @@
 
 package org.jboss.ballroom.client.widgets.tables;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.Event;
@@ -27,9 +30,6 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Default cell table (styles).
@@ -77,7 +77,7 @@ public class DefaultCellTable<T> extends CellTable {
         getElement().setAttribute("role", "grid");
         getElement().addClassName("master_detail-master");
 
-        setEmptyTableWidget(new HTML("<div class='empty-celltable'>No Items!</div>"));
+        setEmptyTableWidget(new HTML("<div class='empty-celltable'>No Items</div>"));
     }
 
     @Override

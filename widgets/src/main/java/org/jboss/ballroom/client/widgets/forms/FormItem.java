@@ -156,8 +156,13 @@ public abstract class FormItem<T> implements InputElement<T>, Comparable<String>
 
     public enum VALUE_SEMANTICS {UNDEFINED}
 
-    Element getInputElement() {
+    public Element getInputElement() {
         return null;
+    }
+
+    public void focus(){
+        if(getInputElement() != null)
+            getInputElement().focus();
     }
 
     protected void toggleExpressionInput(Widget target, boolean flag)

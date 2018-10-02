@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -53,7 +54,7 @@ public class Feedback {
         VerticalPanel panel = new VerticalPanel();
         panel.setStyleName("default-window-content");
 
-        HTML text = new HTML(message);
+        HTML text = new HTML(SafeHtmlUtils.htmlEscape(message));
         text.getElement().setId("confirmation-message");
         panel.add(text);
 
@@ -175,7 +176,7 @@ public class Feedback {
         VerticalPanel panel = new VerticalPanel();
         panel.setStyleName("default-window-content");
 
-        HTML text = new HTML(message);
+        HTML text = new HTML(SafeHtmlUtils.htmlEscape(message));
         text.getElement().setId("loading-message");
         panel.add(text);
 

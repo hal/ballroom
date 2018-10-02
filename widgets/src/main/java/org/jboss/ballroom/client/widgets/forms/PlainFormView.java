@@ -7,6 +7,7 @@ import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DefaultCellTableBuilder;
@@ -323,11 +324,11 @@ public class PlainFormView {
             {
                 if (value.startsWith("http://") || value.startsWith("https://"))
                 {
-                    render = HYPERLINK_TEMPLATE.render(labelId, value);
+                    render = HYPERLINK_TEMPLATE.render(labelId, SafeHtmlUtils.htmlEscape(value));
                 }
                 else
                 {
-                    render = VALUE_TEMPLATE.render(labelId, value);
+                    render = VALUE_TEMPLATE.render(labelId, SafeHtmlUtils.htmlEscape(value));
                 }
             }
             else

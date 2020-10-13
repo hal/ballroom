@@ -84,7 +84,7 @@
         <guice.version>3.0</guice.version>
         <gwt.version>2.8.0.20150826</gwt.version>
         <gwtp.version>1.2.1</gwtp.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gwt.compiler.skip>true</gwt.compiler.skip>
     </properties>
